@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function __construct(AdminRepository $adminRepository) {
         $this->adminRepository = $adminRepository;
     }
-
+    
 
      /**
      * @OA\Get(
@@ -27,7 +27,6 @@ class AdminController extends Controller
      *     tags={"Admin"},
      *     summary="List of Admins",
      *     description="Multiple status values can be provided with comma separated string",
-     *     operationId="index",
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",

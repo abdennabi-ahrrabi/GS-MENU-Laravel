@@ -2,246 +2,229 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Http\Requests\ProductRequest;
 use App\Repositories\ProductRepository;
 use App\Traits\ResponseTrait;
-use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
+    /**
+     * Response trait to handle return responses.
+     */
     use ResponseTrait;
-    protected $repository;
 
-    public function __construct(ProductRepository $repository)
+    /**
+     * Product Repository class.
+     *
+     * @var ProductRepository
+     */
+    public $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
     {
-        $this->repository = $repository;
+        $this->middleware('auth:api', ['except' => ['indexAll']]);
+        $this->productRepository = $productRepository;
     }
-    
-        /**
-     * @OA\Get(
+
+    /**
+     * @OA\GET(
      *     path="/api/products",
      *     tags={"Products"},
-     *     summary="List of Products",
-     *     description="Multiple status values can be provided with comma separated string",
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid status value"
-     *     )
+     *     summary="Get Product List",
+     *     description="Get Product List as Array",
+     *     operationId="index",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(response=200,description="Get Product List as Array"),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        try{
-            $repository = new ProductRepository();
-            return $this->responseSuccess($this->repository->getAll());
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $data = $this->productRepository->getAll();
+            return $this->responseSuccess($data, 'Product List Fetch Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
-     * Get a Product
-     * @OA\Get (
-     *     path="/api/products/show/{id}",
+     * @OA\GET(
+     *     path="/api/products/all",
      *     tags={"Products"},
-     *     @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          required=true,
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *     ),
-     *     @OA\Response(
-     *          response=200,
-     *          description="success",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="integer", example=1),
-     *              @OA\Property(property="name", type="string", example="Product 1"),
-     *              @OA\Property(property="id_restaurant", type="integer", example=1),
-     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="invalid",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="msg", type="string", example="fail"),
-     *          )
-     *      )
-     * )*/
-    public function show($id)
+     *     summary="All Products - Publicly Accessible",
+     *     description="All Products - Publicly Accessible",
+     *     operationId="indexAll",
+     *     @OA\Parameter(name="perPage", description="perPage, eg; 20", example=20, in="query", @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="All Products - Publicly Accessible" ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function indexAll(Request $request): JsonResponse
     {
-        try{
-            $repository = new ProductRepository();
-            return $this->responseSuccess($this->repository->getByid($id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $data = $this->productRepository->getPaginatedData($request->perPage);
+            return $this->responseSuccess($data, 'Product List Fetched Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    
-        /**
-     * Create a Product
-     * @OA\Post (
-     *     path="/api/products/store",
+
+    /**
+     * @OA\GET(
+     *     path="/api/products/search",
      *     tags={"Products"},
+     *     summary="All Products - Publicly Accessible",
+     *     description="All Products - Publicly Accessible",
+     *     operationId="search",
+     *     @OA\Parameter(name="perPage", description="perPage, eg; 20", example=20, in="query", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="search", description="search, eg; Test", example="Test", in="query", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="All Products - Publicly Accessible" ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $data = $this->productRepository->search($request->search, $request->perPage);
+            return $this->responseSuccess($data, 'Product List Fetched Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\POST(
+     *     path="/api/products",
+     *     tags={"Products"},
+     *     summary="Create New Product",
+     *     description="Create New Product",
+     *     operationId="store",
      *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="name",
-     *                          type="string",
-     *                          description="Name of the product"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="id_restaurant",
-     *                          type="integer",
-     *                          description="ID of the restaurant who have this products"
-     *                      )
-     *                 ),
-     *                 example={
-     *                     "name": "Product 1",
-     *                     "id_restaurant": 1
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="success",
      *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="integer", example=1),
-     *              @OA\Property(property="name", type="string", example="Product 1"),
-     *              @OA\Property(property="id_restaurant", type="integer", example=1),
-     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *          )
+     *              type="object",
+     *              @OA\Property(property="title", type="string", example="Product 1"),
+     *              @OA\Property(property="description", type="string", example="Description"),
+     *              @OA\Property(property="price", type="integer", example=10120),
+     *              @OA\Property(property="image", type="string", example=""),
+     *          ),
      *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="invalid",
-     *          @OA\JsonContent(
-     *          @OA\Property(property="msg", type="string", example="fail"),
-     *          )
-     *      )
+     *      security={{"bearer":{}}},
+     *      @OA\Response(response=200, description="Create New Product" ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request): JsonResponse
     {
-        try{
-            $repository = new ProductRepository();
-            return $this->responseSuccess($this->repository->create($request));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $product = $this->productRepository->create($request->all());
+            return $this->responseSuccess($product, 'New Product Created Successfully !');
+        } catch (\Exception $exception) {
+            return $this->responseError(null, $exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
- * Update a Product
- * @OA\Put (
- *     path="/api/products/update/{id}",
- *     tags={"Products"},
- *     @OA\Parameter(
- *          name="id",
- *          in="path",
- *          required=true,
- *          @OA\Schema(
- *              type="integer"
- *          )
- *     ),
- *     @OA\RequestBody(
- *         @OA\MediaType(
- *             mediaType="application/json",
- *             @OA\Schema(
- *                 @OA\Property(
- *                      type="object",
- *                      @OA\Property(
- *                          property="name",
- *                          type="string",
- *                          description="Name of the restaurant"
- *                      ),
- *                      @OA\Property(
- *                          property="id_restaurant",
- *                          type="integer",
- *                          description="ID of the user who owns the restaurant"
- *                      )
- *                 ),
- *                 example={
- *                     "name": "Product",
- *                     "id_restaurant": 1
- *                }
- *             )
- *         )
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="success",
- *          @OA\JsonContent(
- *              @OA\Property(property="id", type="integer", example=1),
- *              @OA\Property(property="name", type="string", example="Product"),
- *              @OA\Property(property="id_restaurant", type="integer", example=2),
- *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:30:53.000000Z"),
- *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
- *          )
- *      ),
- *      @OA\Response(
- *          response=400,
- *          description="invalid",
- *          @OA\JsonContent(
- *              @OA\Property(property="msg", type="string", example="fail"),
- *          )
- *      )
- * )*/
-    public function update(Request $request, $id)
+     * @OA\GET(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Show Product Details",
+     *     description="Show Product Details",
+     *     operationId="show",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(name="id", description="id, eg; 1", required=true, in="path", @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Show Product Details"),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function show($id): JsonResponse
     {
-        try{
-            $repository = new ProductRepository();
-            return $this->responseSuccess($this->repository->update($request,$id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $data = $this->productRepository->getByID($id);
+            if (is_null($data)) {
+                return $this->responseError(null, 'Product Not Found', Response::HTTP_NOT_FOUND);
+            }
+
+            return $this->responseSuccess($data, 'Product Details Fetch Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
- * Delete a Product
- * @OA\Delete (
- *     path="/api/products/delete/{id}",
- *     tags={"Products"},
- *     @OA\Parameter(
- *          name="id",
- *          in="path",
- *          required=true,
- *          @OA\Schema(
- *              type="integer"
- *          )
- *     ),
- *      @OA\Response(
- *          response=204,
- *          description="success",
- *      ),
- *      @OA\Response(
- *          response=400,
- *          description="invalid",
- *          @OA\JsonContent(
- *              @OA\Property(property="msg", type="string", example="fail"),
- *          )
- *      )
- * )
-*/
-    public function delete($id)
+     * @OA\PUT(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Update Product",
+     *     description="Update Product",
+     *     @OA\Parameter(name="id", description="id, eg; 1", required=true, in="path", @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="title", type="string", example="Product 1"),
+     *              @OA\Property(property="description", type="string", example="Description"),
+     *              @OA\Property(property="price", type="integer", example=10120),
+     *              @OA\Property(property="image", type="string", example=""),
+     *          ),
+     *      ),
+     *     operationId="update",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(response=200, description="Update Product"),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function update(ProductRequest $request, $id): JsonResponse
     {
-        try{
-            $repository = new ProductRepository();
-            return $this->responseSuccess($this->repository->delete($id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $data = $this->productRepository->update($id, $request->all());
+            if (is_null($data))
+                return $this->responseError(null, 'Product Not Found', Response::HTTP_NOT_FOUND);
+
+            return $this->responseSuccess($data, 'Product Updated Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\DELETE(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Delete Product",
+     *     description="Delete Product",
+     *     operationId="destroy",
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(name="id", description="id, eg; 1", required=true, in="path", @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Delete Product"),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function destroy($id): JsonResponse
+    {
+        try {
+            $product =  $this->productRepository->getByID($id);
+            if (empty($product)) {
+                return $this->responseError(null, 'Product Not Found', Response::HTTP_NOT_FOUND);
+            }
+
+            $deleted = $this->productRepository->delete($id);
+            if (!$deleted) {
+                return $this->responseError(null, 'Failed to delete the product.', Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return $this->responseSuccess($product, 'Product Deleted Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
-

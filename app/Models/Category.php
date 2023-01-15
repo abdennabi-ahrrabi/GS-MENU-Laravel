@@ -11,11 +11,12 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = [
-        'name_c', 'id_product',
+        'name', 'restaurant_id',
     ];
 
-    public function product()
+    
+    public function restaurants()
     {
-        return $this->belongsTo(Product::class, 'id_product');
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 }

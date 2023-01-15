@@ -11,11 +11,12 @@ class Product extends Model
     protected $table = 'products';
 
     protected $fillable = [
-        'name', 'id_restaurant',
+        'name', 'price', 'description', 'subcategory_id',
     ];
 
-    public function restaurant()
+    
+    public function subcategory()
     {
-        return $this->belongsTo(Restaurant::class, 'id_restaurant');
+        return $this->belongsTo(SubCategory::class, 'subcategory_id');
     }
 }

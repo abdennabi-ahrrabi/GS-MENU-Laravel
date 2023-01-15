@@ -1,79 +1,75 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
-    protected $table = 'users';
-    
+    use HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'username', 'password', 'email', 'telephone'
+        'name',
+        'email',
+        'password',
     ];
 
     /**
-     * Get the name of the unique identifier for the user.
+     * The attributes that should be hidden for serialization.
      *
-     * @return string
+     * @var array<int, string>
      */
-    public function getAuthIdentifierName()
-    {
-        return $this->getKeyName();
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     /**
-     * Get the unique identifier for the user.
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+     /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
      */
-    public function getAuthIdentifier()
+    public function getJWTIdentifier()
     {
-        return $this->{$this->getAuthIdentifierName()};
+        return $this->getKey();
     }
 
     /**
-     * Get the password for the user.
+     * Return a key value array, containing any custom claims to be added to the JWT.
      *
-     * @return string
+     * @return array
      */
-    public function getAuthPassword()
+    public function getJWTCustomClaims()
     {
-        return $this->password;
+        return [];
     }
 
-    /**
-     * Get the token value for the "remember me" session.
-     *
-     * @return string
-     */
-    public function getRememberToken()
+    public function restaurants()
     {
-        return $this->{$this->getRememberTokenName()};
+        return $this->hasMany(Restaurant::class)->orderBy('id', 'desc');
     }
 
-    /**
-     * Set the token value for the "remember me" session.
-     *
-     * @param  string  $value
-     * @return void
-     */
-    public function setRememberToken($value)
+    public function categories()
     {
-        $this->{$this->getRememberTokenName()} = $value;
+        return $this->hasManyThrough(Category::class, Restaurant::class, 'user_id', 'restaurant_id');
     }
 
-    /**
-     * Get the column name for the "remember me" token.
-     *
-     * @return string
-     */
-    public function getRememberTokenName()
-    {
-        return 'remember_token';
-    }
+    
 }
-

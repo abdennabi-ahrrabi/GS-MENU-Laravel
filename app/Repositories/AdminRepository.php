@@ -2,13 +2,26 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ActionsInterface;
+
+use App\Interfaces\CrudInterface;
 use App\Models\Admin;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AdminRepository implements ActionsInterface{
+class AdminRepository{
+    
+    public function register(array $data): Admin
+    {
+        $data = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ];
+
+        return Admin::create($data);
+    }
     
     public function getAll(int $perPage = 10): Paginator
     {

@@ -12,7 +12,7 @@
                 ],
                 "summary": "List of Admins",
                 "description": "Multiple status values can be provided with comma separated string",
-                "operationId": "index",
+                "operationId": "27f6447f654b54ee491274c73668fa10",
                 "responses": {
                     "200": {
                         "description": "successful operation"
@@ -343,79 +343,140 @@
                 }
             }
         },
-        "/api/categories/show/{id}": {
+        "/api/categories/all": {
             "get": {
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Get a Category",
-                "operationId": "3f32348e47f4eed3a77d79be5b834f35",
+                "summary": "All Categories - Publicly Accessible",
+                "description": "All Categories - Publicly Accessible",
+                "operationId": "4bed95b28edd0bfe728f3ea0684ee1f0",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
                         "schema": {
                             "type": "integer"
-                        }
+                        },
+                        "example": 20
                     }
                 ],
                 "responses": {
                     "200": {
+                        "description": "All Categories - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/categories/search": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "All Categories - Publicly Accessible",
+                "description": "All Categories - Publicly Accessible",
+                "operationId": "6b9de7e2a60db560dbc4e473dccdd6b6",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "search, eg; Test",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Categories - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/categories/store": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create a Category",
+                "operationId": "a09cc03db6b82ad0df1874e4fd92d2ed",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the category",
+                                                "type": "string"
+                                            },
+                                            "restauant_id": {
+                                                "description": "ID of the restaurant who have this category",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Pizza",
+                                    "restaurant_id": 2
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
                         "description": "success",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name_c": {
-                                                    "type": "string",
-                                                    "example": "Category 1"
-                                                },
-                                                "id_product": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2023-01-01T22:45:03.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2023-01-01T22:45:03.000000Z"
-                                                },
-                                                "product": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "example": "Product"
-                                                        },
-                                                        "id_restaurant": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "example": "2023-01-01T21:22:00.000000Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "example": "2023-01-01T21:26:02.000000Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Pizza"
+                                        },
+                                        "restarant_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2023-01-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2023-01-11T09:25:53.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -442,43 +503,25 @@
                 }
             }
         },
-        "/api/categories/store": {
-            "post": {
+        "/api/categories/show/{id}": {
+            "get": {
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Create a Categorie",
-                "operationId": "a09cc03db6b82ad0df1874e4fd92d2ed",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name_c": {
-                                                "description": "Name of the category",
-                                                "type": "string"
-                                            },
-                                            "id_product": {
-                                                "description": "ID of the product",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "name": "Category 1",
-                                    "id_restaurant": 1
-                                }
-                            }
+                "summary": "Get a Category",
+                "operationId": "3f32348e47f4eed3a77d79be5b834f35",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "success",
                         "content": {
                             "application/json": {
@@ -488,21 +531,21 @@
                                             "type": "integer",
                                             "example": 1
                                         },
-                                        "name_c": {
+                                        "name": {
                                             "type": "string",
                                             "example": "Category 1"
                                         },
-                                        "id_product": {
+                                        "restaurant_id": {
                                             "type": "integer",
                                             "example": 1
                                         },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-01T22:45:03.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2023-01-01T22:45:03.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -534,12 +577,14 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Update a Category",
+                "summary": "Update Category",
+                "description": "Update Category",
                 "operationId": "d68d3691389e60378bb9391c6c7f7b34",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "id, eg; 1",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -551,79 +596,36 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name_c": {
-                                                "description": "Name of the category",
-                                                "type": "string"
-                                            },
-                                            "id_product": {
-                                                "description": "ID of the product",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Category 1"
+                                    },
+                                    "resataurant_id": {
+                                        "type": "integer",
+                                        "example": 2
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "name": "Category 2",
-                                    "id_product": 1
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name_c": {
-                                            "type": "string",
-                                            "example": "Category 2"
-                                        },
-                                        "id_product": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:30:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Update Product"
                     },
                     "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/categories/delete/{id}": {
@@ -632,7 +634,7 @@
                     "Categories"
                 ],
                 "summary": "Delete a Category",
-                "operationId": "755faeced06553ad46130d155985d902",
+                "operationId": "02254b86bf57dd4ea774b6fab8a6fd92",
                 "parameters": [
                     {
                         "name": "id",
@@ -671,283 +673,164 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "List of Products",
-                "description": "Multiple status values can be provided with comma separated string",
-                "operationId": "1bfaa78d1c2c3848ab8165c5dadcad3e",
+                "summary": "Get Product List",
+                "description": "Get Product List as Array",
+                "operationId": "index",
                 "responses": {
                     "200": {
-                        "description": "successful operation"
+                        "description": "Get Product List as Array"
                     },
                     "400": {
-                        "description": "Invalid status value"
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
-                }
-            }
-        },
-        "/api/products/show/{id}": {
-            "get": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Get a Product",
-                "operationId": "cc0f92c7a2a8c89c0452c75947bdf598",
-                "parameters": [
+                },
+                "security": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "bearer": []
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Product 1"
-                                        },
-                                        "id_restaurant": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/products/store": {
+                ]
+            },
             "post": {
                 "tags": [
                     "Products"
                 ],
-                "summary": "Create a Product",
-                "operationId": "90841008e6d2f8cb3655547d2377fb01",
+                "summary": "Create New Product",
+                "description": "Create New Product",
+                "operationId": "store",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name": {
-                                                "description": "Name of the product",
-                                                "type": "string"
-                                            },
-                                            "id_restaurant": {
-                                                "description": "ID of the restaurant who have this products",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Product 1"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description"
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 10120
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": ""
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "name": "Product 1",
-                                    "id_restaurant": 1
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Product 1"
-                                        },
-                                        "id_restaurant": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/products/update/{id}": {
-            "put": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Update a Product",
-                "operationId": "4aaff3db5fa64b3e5803a530d91e8d21",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name": {
-                                                "description": "Name of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "id_restaurant": {
-                                                "description": "ID of the user who owns the restaurant",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "name": "Product",
-                                    "id_restaurant": 1
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Product"
-                                        },
-                                        "id_restaurant": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:30:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Create New Product"
                     },
                     "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/products/all": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "All Products - Publicly Accessible",
+                "description": "All Products - Publicly Accessible",
+                "operationId": "indexAll",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Products - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
         },
-        "/api/products/delete/{id}": {
-            "delete": {
+        "/api/products/search": {
+            "get": {
                 "tags": [
                     "Products"
                 ],
-                "summary": "Delete a Product",
-                "operationId": "be199fdce90fd0e0998dd9beb8ef7969",
+                "summary": "All Products - Publicly Accessible",
+                "description": "All Products - Publicly Accessible",
+                "operationId": "search",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "search, eg; Test",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Products - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Show Product Details",
+                "description": "Show Product Details",
+                "operationId": "show",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "id, eg; 1",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -955,26 +838,118 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "success"
+                    "200": {
+                        "description": "Show Product Details"
                     },
                     "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update Product",
+                "description": "Update Product",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id, eg; 1",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Product 1"
                                     },
-                                    "type": "object"
-                                }
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description"
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 10120
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
-                }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update Product"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete Product",
+                "description": "Delete Product",
+                "operationId": "destroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id, eg; 1",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete Product"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/restaurants": {
@@ -991,6 +966,79 @@
                     },
                     "400": {
                         "description": "Invalid status value"
+                    }
+                }
+            }
+        },
+        "/api/restaurants/all": {
+            "get": {
+                "tags": [
+                    "Restaurants"
+                ],
+                "summary": "All Restaurants - Publicly Accessible",
+                "description": "All Restaurants - Publicly Accessible",
+                "operationId": "0e390501c6147527b627735cf517bcfc",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Restaurants - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/restaurants/search": {
+            "get": {
+                "tags": [
+                    "Restaurants"
+                ],
+                "summary": "All Restaurants - Publicly Accessible",
+                "description": "All Restaurants - Publicly Accessible",
+                "operationId": "b54700b170fad1c9280cb8a2cc00eef3",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "search, eg; Test",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Restaurants - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
@@ -1013,39 +1061,23 @@
                                                 "description": "Name of the restaurant",
                                                 "type": "string"
                                             },
-                                            "description": {
-                                                "description": "Description of the restaurant",
+                                            "Location": {
+                                                "description": "Location of the restaurant",
                                                 "type": "string"
                                             },
-                                            "website": {
-                                                "description": "Website of the restaurant",
+                                            "Address": {
+                                                "description": "Adress of the restaurant's address",
                                                 "type": "string"
                                             },
-                                            "telephone": {
-                                                "description": "Telephone number of the restaurant",
+                                            "Phone Number": {
+                                                "description": "Phone Number of the restaurant",
                                                 "type": "string"
                                             },
-                                            "email": {
-                                                "description": "Email of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "address1": {
-                                                "description": "First line of the restaurant's address",
-                                                "type": "string"
-                                            },
-                                            "address2": {
-                                                "description": "Second line of the restaurant's address",
-                                                "type": "string"
-                                            },
-                                            "ville": {
+                                            "Description": {
                                                 "description": "City in which the restaurant is located",
                                                 "type": "string"
                                             },
-                                            "pay": {
-                                                "description": "Payment methods accepted by the restaurant",
-                                                "type": "string"
-                                            },
-                                            "id_user": {
+                                            "user_id": {
                                                 "description": "ID of the user who owns the restaurant",
                                                 "type": "integer"
                                             }
@@ -1055,16 +1087,13 @@
                                 },
                                 "type": "object",
                                 "example": {
-                                    "name": "My Restaurant",
-                                    "description": "A cozy restaurant with a variety of dishes.",
-                                    "website": "www.myrestaurant.com",
+                                    "name": "KFC",
+                                    "location": "LA",
+                                    "address": "123 ST PARIS",
                                     "telephone": "123-456-7890",
-                                    "email": "info@myrestaurant.com",
-                                    "address1": "123 Main Street",
-                                    "address2": "Suite 100",
-                                    "ville": "My City",
-                                    "pay": "Cash, Credit Card",
-                                    "id_user": 1
+                                    "phone_number": "555-555-5555",
+                                    "description": "Fried chicken specialist",
+                                    "user_id": 1
                                 }
                             }
                         }
@@ -1083,51 +1112,31 @@
                                         },
                                         "name": {
                                             "type": "string",
-                                            "example": "My Restaurant"
+                                            "example": "KFC"
                                         },
-                                        "description": {
+                                        "Location": {
                                             "type": "string",
-                                            "example": "A cozy restaurant with a variety of dishes."
+                                            "example": "LA"
                                         },
-                                        "website": {
+                                        "Address": {
                                             "type": "string",
-                                            "example": "www.myrestaurant.com"
+                                            "example": "123 ST PARIS"
                                         },
-                                        "telephone": {
+                                        "Phone Number": {
                                             "type": "string",
-                                            "example": "123-456-7890"
+                                            "example": "555-555-5555"
                                         },
-                                        "email": {
+                                        "Description": {
                                             "type": "string",
-                                            "example": "info@myrestaurant.com"
-                                        },
-                                        "address1": {
-                                            "type": "string",
-                                            "example": "123 Main Street"
-                                        },
-                                        "address2": {
-                                            "type": "string",
-                                            "example": "Suite 100"
-                                        },
-                                        "ville": {
-                                            "type": "string",
-                                            "example": "My City"
-                                        },
-                                        "pay": {
-                                            "type": "string",
-                                            "example": "Cash, Credit Card"
-                                        },
-                                        "id_user": {
-                                            "type": "integer",
-                                            "example": 1
+                                            "example": "Fried chicken specialist"
                                         },
                                         "updated_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-15T15:25:53.000000Z"
                                         },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-15T15:25:53.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -1184,51 +1193,31 @@
                                         },
                                         "name": {
                                             "type": "string",
-                                            "example": "My Restaurant"
+                                            "example": "KFC"
                                         },
-                                        "description": {
+                                        "Location": {
                                             "type": "string",
-                                            "example": "A cozy restaurant with a variety of dishes."
+                                            "example": "LA"
                                         },
-                                        "website": {
+                                        "Address": {
                                             "type": "string",
-                                            "example": "www.myrestaurant.com"
+                                            "example": "123 ST PARIS"
                                         },
-                                        "telephone": {
+                                        "Phone Number": {
                                             "type": "string",
-                                            "example": "123-456-7890"
+                                            "example": "555-555-5555"
                                         },
-                                        "email": {
+                                        "Description": {
                                             "type": "string",
-                                            "example": "info@myrestaurant.com"
-                                        },
-                                        "address1": {
-                                            "type": "string",
-                                            "example": "123 Main Street"
-                                        },
-                                        "address2": {
-                                            "type": "string",
-                                            "example": "Suite 100"
-                                        },
-                                        "ville": {
-                                            "type": "string",
-                                            "example": "My City"
-                                        },
-                                        "pay": {
-                                            "type": "string",
-                                            "example": "Cash, Credit Card"
-                                        },
-                                        "id_user": {
-                                            "type": "integer",
-                                            "example": 1
+                                            "example": "Fried chicken specialist"
                                         },
                                         "updated_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-15T15:25:53.000000Z"
                                         },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-15T15:25:53.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -1260,12 +1249,14 @@
                 "tags": [
                     "Restaurants"
                 ],
-                "summary": "Update a Restaurant",
+                "summary": "Update Restaurant",
+                "description": "Update Restaurant",
                 "operationId": "f5454aa882cf317f52bde0f774ada276",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "id, eg; 1",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1277,151 +1268,60 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name": {
-                                                "description": "Name of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "description": {
-                                                "description": "Description of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "website": {
-                                                "description": "Website of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "telephone": {
-                                                "description": "Telephone number of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "description": "Email of the restaurant",
-                                                "type": "string"
-                                            },
-                                            "address1": {
-                                                "description": "First line of the restaurant's address",
-                                                "type": "string"
-                                            },
-                                            "address2": {
-                                                "description": "Second line of the restaurant's address",
-                                                "type": "string"
-                                            },
-                                            "ville": {
-                                                "description": "City where the restaurant is located",
-                                                "type": "string"
-                                            },
-                                            "pay": {
-                                                "description": "Payment methods accepted by the restaurant",
-                                                "type": "string"
-                                            },
-                                            "id_user": {
-                                                "description": "ID of the user who owns the restaurant",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "KFC"
+                                    },
+                                    "Location": {
+                                        "type": "string",
+                                        "example": "LA"
+                                    },
+                                    "Address": {
+                                        "type": "string",
+                                        "example": "123 ST PARIS"
+                                    },
+                                    "Phone Number": {
+                                        "type": "string",
+                                        "example": "555-555-5555"
+                                    },
+                                    "Description": {
+                                        "type": "string",
+                                        "example": "Fried chicken specialist"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "example": "2023-01-15T15:25:53.000000Z"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "example": "2023-01-15T15:25:53.000000Z"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "name": "Updated Restaurant",
-                                    "description": "An updated, cozy restaurant with a variety of dishes.",
-                                    "website": "www.updatedrestaurant.com",
-                                    "telephone": "123-456-7891",
-                                    "email": "info@updatedrestaurant.com",
-                                    "address1": "124 Main Street",
-                                    "address2": "Suite 101",
-                                    "ville": "Updated City",
-                                    "pay": "Cash, Credit Card, Venmo",
-                                    "id_user": 2
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "Updated Restaurant"
-                                        },
-                                        "description": {
-                                            "type": "string",
-                                            "example": "An updated, cozy restaurant with a variety of dishes."
-                                        },
-                                        "website": {
-                                            "type": "string",
-                                            "example": "www.updatedrestaurant.com"
-                                        },
-                                        "telephone": {
-                                            "type": "string",
-                                            "example": "123-456-7891"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "info@updatedrestaurant.com"
-                                        },
-                                        "address1": {
-                                            "type": "string",
-                                            "example": "124 Main Street"
-                                        },
-                                        "address2": {
-                                            "type": "string",
-                                            "example": "Suite 101"
-                                        },
-                                        "ville": {
-                                            "type": "string",
-                                            "example": "Updated City"
-                                        },
-                                        "pay": {
-                                            "type": "string",
-                                            "example": "Cash, Credit Card, Venmo"
-                                        },
-                                        "id_user": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:30:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Update Restaurant"
                     },
                     "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/restaurants/delete/{id}": {
@@ -1430,7 +1330,7 @@
                     "Restaurants"
                 ],
                 "summary": "Delete a Restaurant",
-                "operationId": "a8a0eda43d4f46c69a4712a1b4f4a073",
+                "operationId": "f6781cddca299991a0feb6d9cdca837d",
                 "parameters": [
                     {
                         "name": "id",
@@ -1467,9 +1367,9 @@
         "/api/subcategories": {
             "get": {
                 "tags": [
-                    "SubCategories"
+                    "Subcategories"
                 ],
-                "summary": "List of SubCategories",
+                "summary": "List of Subcategories",
                 "description": "Multiple status values can be provided with comma separated string",
                 "operationId": "329bf50ac12550f84d6a70f7523dbffa",
                 "responses": {
@@ -1482,10 +1382,170 @@
                 }
             }
         },
+        "/api/subcategories/all": {
+            "get": {
+                "tags": [
+                    "Subcategories"
+                ],
+                "summary": "All Subcategories - Publicly Accessible",
+                "description": "All Subcategories - Publicly Accessible",
+                "operationId": "9aad361ae4f809c768f7a59d6777e140",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Subcategories - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/subcategories/search": {
+            "get": {
+                "tags": [
+                    "Subcategories"
+                ],
+                "summary": "All Subcategories - Publicly Accessible",
+                "description": "All Subcategories - Publicly Accessible",
+                "operationId": "91718f1f7ca0a5a87086236f5c835be5",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "perPage, eg; 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 20
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "search, eg; Test",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Test"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Subcategories - Publicly Accessible"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/subcategories/store": {
+            "post": {
+                "tags": [
+                    "Subcategories"
+                ],
+                "summary": "Create a SubCategory",
+                "operationId": "1371caf6e25ea5626c0cdec6803a23f5",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the subcategory",
+                                                "type": "string"
+                                            },
+                                            "Parent_Category_id": {
+                                                "description": "ID of the category who have this subcategory",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Margherita",
+                                    "Parent_Category_id": 2
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Margherita"
+                                        },
+                                        "Parent_Category_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2023-01-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2023-01-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/subcategories/show/{id}": {
             "get": {
                 "tags": [
-                    "SubCategories"
+                    "Subcategories"
                 ],
                 "summary": "Get a SubCategory",
                 "operationId": "c5620ba22a14f8fa228d12eb39be5a21",
@@ -1506,148 +1566,25 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name_sc": {
-                                                    "type": "string",
-                                                    "example": "SubCategory 1"
-                                                },
-                                                "prix": {
-                                                    "type": "number",
-                                                    "example": 10.99
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "This is a description of SubCategory 1"
-                                                },
-                                                "id_categories": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2023-01-02T19:05:13.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2023-01-02T19:05:13.000000Z"
-                                                },
-                                                "category": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "name_c": {
-                                                            "type": "string",
-                                                            "example": "Category 1"
-                                                        },
-                                                        "id_product": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "example": "2023-01-01T22:45:03.000000Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "example": "2023-01-01T22:45:03.000000Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/subcategories/store": {
-            "post": {
-                "tags": [
-                    "SubCategories"
-                ],
-                "summary": "Create a SubCategorie",
-                "operationId": "1371caf6e25ea5626c0cdec6803a23f5",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name_sc": {
-                                                "description": "Name of the subcategory",
-                                                "type": "string"
-                                            },
-                                            "prix": {
-                                                "description": "Price of the subcategory",
-                                                "type": "number"
-                                            },
-                                            "description": {
-                                                "description": "description of the subcategory",
-                                                "type": "string"
-                                            },
-                                            "id_categories": {
-                                                "description": "ID of the category",
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "name_sc": "SubCategory 1",
-                                    "prix": 10.99,
-                                    "description": "This is a description of SubCategory 1",
-                                    "id_restaurant": 1
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "name_sc": {
-                                            "type": "string",
-                                            "example": "SubCategory 1"
-                                        },
-                                        "prix": {
-                                            "type": "number",
-                                            "example": 10.99
-                                        },
-                                        "description": {
-                                            "type": "string",
-                                            "example": "This is a description of SubCategory 1"
-                                        },
-                                        "id_categories": {
+                                        "id": {
                                             "type": "integer",
                                             "example": 1
                                         },
-                                        "updated_at": {
+                                        "name": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "Margherita"
+                                        },
+                                        "Parent_Category_id": {
+                                            "type": "integer",
+                                            "example": 2
                                         },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-01T22:45:03.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2023-01-01T22:45:03.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -1677,20 +1614,10 @@
         "/api/subcategories/update/{id}": {
             "put": {
                 "tags": [
-                    "SubCategories"
+                    "Subcategories"
                 ],
-                "summary": "Update a SubCategory",
+                "summary": "Update a SubCategoy",
                 "operationId": "17bff7b913200a7378c19f95cc7dbe0b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1698,20 +1625,12 @@
                                 "properties": {
                                     "": {
                                         "properties": {
-                                            "name_sc": {
+                                            "name": {
                                                 "description": "Name of the subcategory",
                                                 "type": "string"
                                             },
-                                            "prix": {
-                                                "description": "Price of the subcategory",
-                                                "type": "number"
-                                            },
-                                            "description": {
-                                                "description": "description of the subcategory",
-                                                "type": "string"
-                                            },
-                                            "id_categories": {
-                                                "description": "ID of the category",
+                                            "Parent_Category_id": {
+                                                "description": "ID of the category who have this subcategory",
                                                 "type": "integer"
                                             }
                                         },
@@ -1720,45 +1639,39 @@
                                 },
                                 "type": "object",
                                 "example": {
-                                    "name_sc": "SubCategory",
-                                    "prix": 10.99,
-                                    "description": "This is a description of SubCategory 1",
-                                    "id_restaurant": 1
+                                    "name": "Margherita 1",
+                                    "Parent_Category_id": 2
                                 }
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "success",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "name_sc": {
-                                            "type": "string",
-                                            "example": "SubCategory"
-                                        },
-                                        "prix": {
-                                            "type": "number",
-                                            "example": 10.99
-                                        },
-                                        "description": {
-                                            "type": "string",
-                                            "example": "This is a description of SubCategory 1"
-                                        },
-                                        "id_categories": {
+                                        "id": {
                                             "type": "integer",
                                             "example": 1
                                         },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Margherita 1"
+                                        },
+                                        "Parent_Category_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
                                         "updated_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-11T09:25:53.000000Z"
                                         },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2023-01-11T09:25:53.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -1788,10 +1701,10 @@
         "/api/subcategories/delete/{id}": {
             "delete": {
                 "tags": [
-                    "SubCategories"
+                    "Subcategories"
                 ],
                 "summary": "Delete a SubCategory",
-                "operationId": "caa4759e82034f062b0932eebfc7ec74",
+                "operationId": "1465219460bfd6f3256ef3da4059b38e",
                 "parameters": [
                     {
                         "name": "id",
@@ -1825,360 +1738,165 @@
                 }
             }
         },
-        "/api/users": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "List of Users",
-                "description": "Multiple status values can be provided with comma separated string",
-                "operationId": "c457726701591d1183b53aa71fc13441",
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Invalid status value"
-                    }
-                }
-            }
-        },
-        "/api/users/register": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
-                    "Users"
-                ],
-                "summary": "Create User",
-                "operationId": "758e750cf3b7f1b6a9c906c443a12b83",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "": {
-                                        "properties": {
-                                            "username": {
-                                                "type": "string"
-                                            },
-                                            "password": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "telephone": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "username": "user",
-                                    "password": "password123",
-                                    "email": "johndoe@example.com",
-                                    "telephone": "1234567890"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "username": {
-                                            "type": "string",
-                                            "example": "user"
-                                        },
-                                        "password": {
-                                            "type": "string",
-                                            "example": "$2y$10$.Yta5b5uuQntqf.bALbws.TRPWRpeGPeze1NRMIEpyCKBTswRTAlu"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "admin@example.com"
-                                        },
-                                        "telephone": {
-                                            "type": "string",
-                                            "example": "1234567890"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "fail"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/login": {
-            "post": {
-                "tags": [
-                    "Users"
+                    "Authentication"
                 ],
                 "summary": "Login",
-                "operationId": "c9b20e2431404b7383ce7e626b4b6f05",
+                "description": "Login",
+                "operationId": "224ca9cc21e92b4e3291419882455b09",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "email": {
-                                                "description": "Email address of the user",
-                                                "type": "string"
-                                            },
-                                            "password": {
-                                                "description": "Password of the user",
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "email": {
+                                        "type": "string",
+                                        "example": "first@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "email": "johndoe@example.com",
-                                    "password": "password123"
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string",
-                                            "example": "true"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Login"
                     },
                     "400": {
-                        "description": "invalid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Unauthorized"
-                                        },
-                                        "email": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "example": "The email field is required."
-                                            }
-                                        },
-                                        "password": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "example": "The password field is required."
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
         },
-        "/api/users/update/{id}": {
-            "put": {
+        "/api/auth/register": {
+            "post": {
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
-                "summary": "Update User",
-                "operationId": "97d6cee3e6d901306b2a691941b07ef0",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Register User",
+                "description": "Register New User",
+                "operationId": "47d5ee6b3638073a988b692b1a5902cf",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "username": {
-                                                "type": "string"
-                                            },
-                                            "password": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "telephone": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jhon Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "jhondoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456jhon"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "123456jhon"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "username": "Abdennabi Ahrrabi",
-                                    "password": "Ahrrabi",
-                                    "email": "Abdennabi-Ahrrabi@outlook.fr",
-                                    "telephone": "0660150740"
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "username": {
-                                            "type": "string",
-                                            "example": "Abdennabi Ahrrabi"
-                                        },
-                                        "password": {
-                                            "type": "string",
-                                            "example": "Ahrrabi"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "Abdennabi-Ahrrabi@outlook.fr"
-                                        },
-                                        "telephone": {
-                                            "type": "string",
-                                            "example": "0660150740"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Register New User Data"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
         },
-        "/api/users/delete/{id}": {
-            "delete": {
+        "/api/auth/me": {
+            "get": {
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
-                "summary": "Delete User",
-                "operationId": "28d69480d5c914e140370622705e8d10",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Authenticated User Profile",
+                "description": "Authenticated User Profile",
+                "operationId": "8c6eb38d8f7bd492c2c8fc1ed239a6b2",
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "delete user success"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Authenticated User Profile"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout",
+                "description": "Logout",
+                "operationId": "53d83c37c7970aebebdc61ca4971d22e",
+                "responses": {
+                    "200": {
+                        "description": "Logout"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
                 }
             }
-        }
-    },
-    "components": {
-        "responses": {
-            "400": {
-                "description": "invalid",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "msg": {
-                                    "type": "string",
-                                    "example": "fail"
-                                }
-                            },
-                            "type": "object"
-                        }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh",
+                "description": "Refresh",
+                "operationId": "f421a1406c9117b2dc424b29281aa38a",
+                "responses": {
+                    "200": {
+                        "description": "Refresh"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         }
     }

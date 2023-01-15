@@ -2,308 +2,200 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Repositories\UserRepository;
 use App\Traits\ResponseTrait;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    /**
+     * Response trait to handle return responses.
+     */
     use ResponseTrait;
 
-    public $userRepository;
-    
-    public function __construct(UserRepository $userRepository) {
-        $this->userRepository = $userRepository;
-    }
-    
     /**
-     * @OA\Get(
-     *     path="/api/users",
-     *     tags={"Users"},
-     *     summary="List of Users",
-     *     description="Multiple status values can be provided with comma separated string",
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid status value"
-     *     )
-     * )
+     * Auth related functionalities.
+     *
+     * @var UserRepository
      */
-    public function index()
+    public $UserRepository;
+
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct(UserRepository $ar)
     {
-        /*try{
-            $userRepository = new UserRepository();
-            return $this->responseSuccess($this->userRepository->getAll());
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
-        }*/
-        return User::with('restaurants.products')->get();
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->UserRepository = $ar;
     }
-        /**
-     * Create User
-     * @OA\Post (
-     *     path="/api/users/register",
-     *     tags={"Users"},
+
+    /**
+     * @OA\POST(
+     *     path="/api/auth/login",
+     *     tags={"Authentication"},
+     *     summary="Login",
+     *     description="Login",
      *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="username",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="password",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="email",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="telephone",
-     *                          type="string"
-     *                      )
-     *                 ),
-     *                 example={
-     *                     "username": "user",
-     *                     "password": "password123",
-     *                     "email":"johndoe@example.com",
-     *                     "telephone": "1234567890"
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="success",
      *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="number", example=1),
-     *              @OA\Property(property="username", type="string", example="user"),
-     *              @OA\Property(property="password", type="string", example="$2y$10$.Yta5b5uuQntqf.bALbws.TRPWRpeGPeze1NRMIEpyCKBTswRTAlu"),
-     *              @OA\Property(property="email", type="string", example="admin@example.com"),
-     *              @OA\Property(property="telephone", type="string", example="1234567890"),
-     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *          )
+     *              type="object",
+     *              @OA\Property(property="email", type="string", example="first@example.com"),
+     *              @OA\Property(property="password", type="string", example="password123")
+     *          ),
      *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="invalid",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="msg", type="string", example="fail"),
-     *          )
-     *      )
+     *      @OA\Response(response=200, description="Login"),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function register(Request $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        try{
-            $userRepository = new UserRepository();
-            return $this->responseSuccess($this->userRepository->create($request));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $credentials = $request->only('email', 'password');
+
+            if ($token = $this->guard()->attempt($credentials)) {
+                $data =  $this->respondWithToken($token);
+            } else {
+                return $this->responseError(null, 'Invalid Email and Password !', Response::HTTP_UNAUTHORIZED);
+            }
+
+            return $this->responseSuccess($data, 'Logged In Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
- * Login
- * @OA\Post (
- *     path="/api/users/login",
- *     tags={"Users"},
- *     @OA\RequestBody(
- *         @OA\MediaType(
- *             mediaType="application/json",
- *             @OA\Schema(
- *                 @OA\Property(
- *                      type="object",
- *                      @OA\Property(
- *                          property="email",
- *                          type="string",
- *                          description="Email address of the user"
- *                      ),
- *                      @OA\Property(
- *                          property="password",
- *                          type="string",
- *                          description="Password of the user"
- *                      )
- *                 ),
- *                 example={
- *                     "email" : "johndoe@example.com",
- *                     "password" : "password123"
- *                }
- *             )
- *         )
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="success",
- *          @OA\JsonContent(
- *              @OA\Property(property="token", type="string", example="true")
- *          )
- *      ),
- *      @OA\Response(
- *          response=400,
- *          description="invalid",
- *          @OA\JsonContent(
- *              @OA\Property(property="error", type="string", example="Unauthorized"),
- *              @OA\Property(
- *                  property="email",
- *                  type="array",
- *                  @OA\Items(
- *                      type="string",
- *                      example="The email field is required."
- *                  )
- *              ),
- *              @OA\Property(
- *                  property="password",
- *                  type="array",
- *                  @OA\Items(
- *                      type="string",
- *                      example="The password field is required."
- *                  )
- *              )
- *          )
- *      )
- * )
- */
-
-    public function login(Request $request)
-    {
-        try{
-        $userRepository = new UserRepository();
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->responseError($validator->errors());
-        }
-
-        // Attempt to authenticate the user
-        $credentials = $request->only(['email', 'password']);
-        if (!$token = auth()->attempt($credentials)) {
-            return $this->responseError(['error' => 'Unauthorized']);
-        }
-        return $this->responseSuccess(['token' => $token]);
-    }catch(Exception $e) {
-        return $this->responseError($e->getMessage());
-    }
-    }
-    
-    public function show($id)
-    {
-        try{
-            $userRepository = new UserRepository();
-            return $this->responseSuccess($this->userRepository->getByid($id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
-        }
-    }
-
-     /**
-     * Update User
-     * @OA\Put (
-     *     path="/api/users/update/{id}",
-     *     tags={"Users"},
-     *     @OA\Parameter(
-     *         in="path",
-     *         name="id",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+     * @OA\POST(
+     *     path="/api/auth/register",
+     *     tags={"Authentication"},
+     *     summary="Register User",
+     *     description="Register New User",
      *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="username",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="password",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="email",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="telephone",
-     *                          type="string"
-     *                      )
-     *                 ),
-     *                 example={
-     *                     "username": "Abdennabi Ahrrabi",
-     *                     "password": "Ahrrabi",
-     *                     "email": "Abdennabi-Ahrrabi@outlook.fr",
-     *                     "telephone": "0660150740"
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="success",
      *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="number", example=1),
-     *              @OA\Property(property="username", type="string", example="Abdennabi Ahrrabi"),
-     *              @OA\Property(property="password", type="string", example="Ahrrabi"),
-     *              @OA\Property(property="email", type="string", example="Abdennabi-Ahrrabi@outlook.fr"),
-     *              @OA\Property(property="telephone", type="string", example="0660150740"),
-     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *          )
-     *      )
+     *              type="object",
+     *              @OA\Property(property="name", type="string", example="Jhon Doe"),
+     *              @OA\Property(property="email", type="string", example="jhondoe@example.com"),
+     *              @OA\Property(property="password", type="string", example="123456jhon"),
+     *              @OA\Property(property="password_confirmation", type="string", example="123456jhon")
+     *          ),
+     *      ),
+     *      @OA\Response(response=200, description="Register New User Data" ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="Resource Not Found")
      * )
      */
-    public function update(Request $request, $id)
+    public function register(RegisterRequest $request): JsonResponse
     {
-        try{
-            $userRepository = new UserRepository();
-            return $this->responseSuccess($this->userRepository->update($request,$id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $requestData = $request->only('name', 'email', 'password', 'password_confirmation');
+            $user = $this->UserRepository->register($requestData);
+            if ($user) {
+                if ($token = $this->guard()->attempt($requestData)) {
+                    $data =  $this->respondWithToken($token);
+                    return $this->responseSuccess($data, 'User Registered and Logged in Successfully', Response::HTTP_OK);
+                }
+            }
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
-     * Delete User
-     * @OA\Delete (
-     *     path="/api/users/delete/{id}",
-     *     tags={"Users"},
-     *     @OA\Parameter(
-     *         in="path",
-     *         name="id",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="success",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="msg", type="string", example="delete user success")
-     *         )
-     *     )
+     * @OA\GET(
+     *     path="/api/auth/me",
+     *     tags={"Authentication"},
+     *     summary="Authenticated User Profile",
+     *     description="Authenticated User Profile",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(response=200, description="Authenticated User Profile" ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function delete($id)
+    public function me(): JsonResponse
     {
-        try{
-            $userRepository = new UserRepository();
-            return $this->responseSuccess($this->userRepository->delete($id));
-        }catch(Exception $e) {
-            return $this->responseError([],$e->getMessage());
+        try {
+            $data = $this->guard()->user();
+            return $this->responseSuccess($data, 'Profile Fetched Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * @OA\POST(
+     *     path="/api/auth/logout",
+     *     tags={"Authentication"},
+     *     summary="Logout",
+     *     description="Logout",
+     *     @OA\Response(response=200, description="Logout" ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function logout(): JsonResponse
+    {
+        try {
+            $this->guard()->logout();
+            return $this->responseSuccess(null, 'Logged out successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\POST(
+     *     path="/api/auth/refresh",
+     *     tags={"Authentication"},
+     *     summary="Refresh",
+     *     description="Refresh",
+     *     security={{"bearer":{}}},
+     *     @OA\Response(response=200, description="Refresh" ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
+    public function refresh(): JsonResponse
+    {
+        try {
+            $data = $this->respondWithToken($this->guard()->refresh());
+            return $this->responseSuccess($data, 'Token Refreshed Successfully !');
+        } catch (\Exception $e) {
+            return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token): array
+    {
+        $data = [[
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60 * 24 * 30, // 43200 Minutes = 30 Days
+            'user' => $this->guard()->user()
+        ]];
+        return $data[0];
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
+    public function guard(): \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard
+    {
+        return Auth::guard();
     }
 }

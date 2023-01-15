@@ -10,13 +10,31 @@ class Restaurant extends Model
     use HasFactory;
     protected $table = 'restaurants';
 
+    /**
+     * Override fillable property data.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'name', 'description', 'website', 'telephone', 'email', 'address1', 'address2', 'ville', 'pay', 'id_user'
+        'name',
+        'location',
+        'address',
+        'phone_number',
+        'description',
+        'user_id'
     ];
 
-    public function user()
+    /**
+     * User
+     *
+     * Get User Uploaded By Restaurant
+     *
+     * @return object
+     */
+    public function user(): object
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class)->select('id', 'name', 'email');
     }
+
     
 }
